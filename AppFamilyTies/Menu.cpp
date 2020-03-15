@@ -19,6 +19,14 @@ Menu::Menu(bool startup) {
   CheckMenuRadioItem(_updateMenu, FIVE_SECONDS, TEN_SECONDS, FIVE_SECONDS, MF_BYCOMMAND);
 }
 
+bool Menu::CheckUpdateMenuRadioOption(UINT first, UINT last, UINT check, UINT flags) {
+  return CheckMenuRadioItem(_updateMenu, FIVE_SECONDS, TEN_SECONDS, check, MF_BYCOMMAND);
+}
+
+DWORD Menu::CheckContextMenuOption(UINT uIDCheckItem, UINT uCheck) {
+  return CheckMenuItem(_contextMenu, uIDCheckItem, uCheck);
+}
+
 Menu::~Menu() {
   DeleteMenu(_updateMenu, FIVE_SECONDS, MF_BYCOMMAND);
   DeleteMenu(_updateMenu, TEN_SECONDS, MF_BYCOMMAND);

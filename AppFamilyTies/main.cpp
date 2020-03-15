@@ -1,4 +1,3 @@
-// хірове управління ресурсами, заюзати смарт поінтери або класи управління
 #include "Window.h"
 #include "Process.h"
 #include "TrayIcon.h"
@@ -7,9 +6,9 @@
 #include <memory>
 
 Process process;
-std::shared_ptr<Window> window;
 Timer timer;
-Menu *menu;
+std::shared_ptr<Window> window;
+std::shared_ptr<Menu> menu;
 
 static LRESULT CALLBACK MouseHook(int nCode, WPARAM wParam, LPARAM lParam) {
   bool isLeftCtrlPressed = GetKeyState(VK_LCONTROL) & 0x80;
@@ -17,8 +16,8 @@ static LRESULT CALLBACK MouseHook(int nCode, WPARAM wParam, LPARAM lParam) {
   bool isLeftMouseKeyPressed = (wParam == WM_LBUTTONUP);
 
   bool isHotKey = isLeftCtrlPressed && isNumOnePressed && isLeftMouseKeyPressed;
-  if (isHotKey) 
-  {  // if 'LeftCtrl + 1 + LeftMouseButton' clicked
+  if (isHotKey) {  
+    // if 'LeftCtrl + 1 + LeftMouseButton' clicked
     window->SetForeground();
     if(!window->GetForeground()) {
       FatalAppExit(0, TEXT("Couldn't get foreground window!"));
@@ -57,8 +56,8 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
   UINT uClicked;
   switch (message) 
   {
-  case WM_CREATE:    
-    menu = new Menu(process.StartsAtStartup());
+  case WM_CREATE:
+    menu = std::make_shared<Menu>(process.StartsAtStartup());
     if (!menu->GetContextMenu() || !menu->GetUpdateMenu()) {
       FatalAppExit(0, TEXT("Couldn't create popup menu!"));
     }
@@ -75,8 +74,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
       case UPDATE_PERIOD:
         GetCursorPos(&curPoint);
         uClicked = TrackPopupMenu(menu->GetUpdateMenu(), TPM_RETURNCMD | TPM_NONOTIFY, curPoint.x, curPoint.y, 0, hwnd, NULL);
-        // покласти check у клас
-        CheckMenuRadioItem(menu->GetUpdateMenu(), FIVE_SECONDS, TEN_SECONDS, uClicked, MF_BYCOMMAND);
+        menu->CheckUpdateMenuRadioOption(FIVE_SECONDS, TEN_SECONDS, uClicked, MF_BYCOMMAND);
         if (uClicked == FIVE_SECONDS) {
           timer.SetUpdatePeriod(5);
         } else if (uClicked == TEN_SECONDS) {
@@ -90,9 +88,9 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
       case START_UP:
         process.ToggleStartup();
         if (process.StartsAtStartup()) {
-          CheckMenuItem(menu->GetContextMenu(), START_UP, MF_CHECKED);
+          menu->CheckContextMenuOption(START_UP, MF_CHECKED);
         } else {
-          CheckMenuItem(menu->GetContextMenu(), START_UP, MF_UNCHECKED);
+          menu->CheckContextMenuOption(START_UP, MF_UNCHECKED);
         }
         break;
       case EXIT:

@@ -6,7 +6,7 @@
 class Window {
 public:
   explicit Window(HINSTANCE hInstance);
-  ~Window() { delete[] _className; }
+  ~Window(){}
 
   void Show(void) const;
   HWND GetOurWindow(void) const { return _hwnd; }
@@ -20,7 +20,6 @@ private:
 
   HWND _hwnd;  // handle of our window
   HWND _fhwnd;   // handle of foreground window
-  TCHAR *_className;
   WNDCLASSEX _wnd;
 };
 

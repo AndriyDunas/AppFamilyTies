@@ -1,7 +1,9 @@
 #include "Timer.h"
 
+const int DEFAULT_UPDATE_PERIOD = 5000; // ms
+
 Timer::Timer() {
-  _updatePeriod = 5000;  // magic
+  _updatePeriod = DEFAULT_UPDATE_PERIOD;
   _timer = 0;
 }
 

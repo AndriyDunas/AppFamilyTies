@@ -9,7 +9,6 @@ TrayIcon::TrayIcon(HWND hwnd) {
   _notifyIconData.uID = APP_TRAY_ICON;
   _notifyIconData.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
   _notifyIconData.uCallbackMessage = WM_TRAYICON; 
-  // краще заюзати безпечну версію
   strcpy_s(_notifyIconData.szTip, APP_NAME);
 }
 

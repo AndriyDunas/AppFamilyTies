@@ -10,10 +10,10 @@ void Process::SaveInfo(DWORD pid) {
   _procInfo += spid;
 
   if (procHandle) {
-	std::shared_ptr<TCHAR> fileName(new TCHAR[MAX_PATH], std::default_delete<TCHAR[]>());
-	if (GetModuleFileNameEx(static_cast<HMODULE>(procHandle), 0, (LPSTR)fileName.get(), MAX_PATH)) {
+    std::unique_ptr<TCHAR[]> fileName(new TCHAR[MAX_PATH](), std::default_delete<TCHAR[]>());
+    if (GetModuleFileNameEx(static_cast<HMODULE>(procHandle), 0, (LPSTR)fileName.get(), MAX_PATH)) {
       _procInfo += "\nName: ";
-	  _procInfo += fileName.get();
+	    _procInfo += fileName.get();
     }
     CloseHandle(procHandle);
   }
@@ -48,7 +48,7 @@ void Process::GetInfo(HWND fhwnd) {
 
 void Process::DisplayInfo(HWND hwnd) const { 
   CreateWindow(TEXT("static"), (LPCSTR)_procInfo.c_str(), 
-    WS_CHILD | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 1000, 400, hwnd, NULL, 0, NULL);
+    WS_CHILD | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, defaultWidth, defaultHeight, hwnd, NULL, 0, NULL);
   SetForegroundWindow(hwnd);
   ShowWindow(hwnd, SW_NORMAL);
 }
@@ -71,10 +71,10 @@ void Process::ToggleStartup() const {
   if (StartsAtStartup()) {
     RegDeleteValue(run, APP_NAME);
   } else {
-    TCHAR us[MAX_PATH]; // аррей на стеку
+    std::unique_ptr<TCHAR[]> us(new TCHAR[MAX_PATH](), std::default_delete<TCHAR[]>());
     RegCreateKey(HKEY_CURRENT_USER, SUB_KEY, &run);
-    GetModuleFileName(NULL, us, MAX_PATH);
-    RegSetValueEx(run, APP_NAME, 0, REG_SZ, reinterpret_cast<LPBYTE>(us), MAX_PATH);
+    GetModuleFileName(NULL, (LPSTR)us.get(), MAX_PATH);
+    RegSetValueEx(run, APP_NAME, 0, REG_SZ, (LPBYTE)us.get(), MAX_PATH);
   }
   RegCloseKey(run);
 }

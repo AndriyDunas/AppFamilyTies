@@ -1,13 +1,12 @@
 #include "Window.h"
 
 extern const TCHAR *APP_NAME;
+const TCHAR defaultClassName[] = "Default Class Name";
 
 Window::Window(HINSTANCE hInstance) {
-  _className = new TCHAR[MAX_PATH];
-  _className = "ddd";
   memset(&_wnd, 0, sizeof(WNDCLASSEX));
   _wnd.hInstance = hInstance;
-  _wnd.lpszClassName = _className;
+  _wnd.lpszClassName = defaultClassName;
   _wnd.lpfnWndProc = WndProc;
   _wnd.style = CS_HREDRAW | CS_VREDRAW;
   _wnd.cbSize = sizeof(WNDCLASSEX);
@@ -18,9 +17,8 @@ Window::Window(HINSTANCE hInstance) {
   _fhwnd = NULL;
 
   if (RegisterClassEx(&_wnd)) {
-    // magic numbers 1000 400
-    _hwnd = CreateWindowEx(0, _className, APP_NAME, 
-      WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1000, 400, 0, NULL, hInstance, NULL);
+    _hwnd = CreateWindowEx(0, _wnd.lpszClassName, APP_NAME, 
+      WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, defaultWidth, defaultHeight, 0, NULL, hInstance, NULL);
   } else {
     _hwnd = NULL;
   }

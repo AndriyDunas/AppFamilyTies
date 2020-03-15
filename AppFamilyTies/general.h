@@ -21,4 +21,7 @@
 
 LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
+const int defaultWidth = 1000;
+const int defaultHeight = 400;
+
 #endif // !GENERAL_H
